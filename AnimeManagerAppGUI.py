@@ -87,8 +87,3 @@ class AnimeAppGUI:
         self.tree_anime_list.column("cal", width=100)
         self.tree_anime_list.column("gen", width=100)
         self.tree_anime_list.column("state", width=100)
-
-if __name__ == '__main__':
-    root = tk.Tk()
-    app = AnimeAppGUI(root)
-    root.mainloop()
