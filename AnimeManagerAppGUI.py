@@ -1,5 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
+from AnimeManager import *
+from AddAnimeForm import *
 
 class AnimeAppGUI:
     def __init__(self, root: tk.Tk):
@@ -9,7 +11,9 @@ class AnimeAppGUI:
         self.root.resizable(False, False)
         self.h1_title_font = ("Arial", 14, "bold")
         self.body_font = ("Arial", 11)
+        self.anime_manager = AnimeManager()
         self.setup_ui()
+        self.update_anime_treeview()
     
     def setup_ui(self):
         # ===== TITLE =====
@@ -27,14 +31,9 @@ class AnimeAppGUI:
         btn_search.pack(side=tk.LEFT, padx=5)
 
         # ===== FILTER =====
-        cmb_gen_values = [
-            "Todos", "Acción", "Aventura", "Comedia", "Drama", "Fantasía", "Ciencia Ficción",
-            "Romance", "Slice of Life", "Terror", "Misterio", "Thriller", "Supernatural",
-            "Deportes", "Musical", "Psicológico", "Mecha", "Harem", "Isekai", "Shounen",
-            "Shoujo", "Seinen", "Josei", "Yaoi", "Yuri", "Ecchi", "Hentai" 
-        ]
-        cmb_cal_values = ["Todas", "⭐⭐⭐⭐⭐", "⭐⭐⭐⭐", "⭐⭐⭐", "⭐⭐", "⭐", "❓"]
-        cmb_sta_values = ["Todos", "Viendo", "Terminado", "Por ver", "En pausa"]
+        cmb_gen_values = ["Todos"] + self.anime_manager.get_anime_genres()
+        cmb_cal_values = ["Todas"] + self.anime_manager.get_anime_ratings()
+        cmb_sta_values = ["Todos"] + self.anime_manager.get_anime_states()
         filter_frame = ttk.Frame(self.root)
         filter_frame.pack(pady=5)
         cal_label = ttk.Label(filter_frame, text="Calificación:", font=self.body_font)
@@ -64,7 +63,7 @@ class AnimeAppGUI:
         btns_padx = 10
         buttons_frame = ttk.Frame(self.root)
         buttons_frame.pack(pady=btns_padx)
-        btn_add = ttk.Button(buttons_frame, text="Agregar Anime")
+        btn_add = ttk.Button(buttons_frame, text="Agregar Anime", command=self.open_add_anime_window)
         btn_add.pack(side=tk.LEFT, padx=btns_padx)
         btn_remove = ttk.Button(buttons_frame, text="Eliminar Anime")
         btn_remove.pack(side=tk.LEFT, padx=btns_padx)
@@ -87,3 +86,15 @@ class AnimeAppGUI:
         self.tree_anime_list.column("cal", width=100)
         self.tree_anime_list.column("gen", width=100)
         self.tree_anime_list.column("state", width=100)
+        
+    def update_anime_treeview(self):
+        for item in self.tree_anime_list.get_children():
+            self.tree_anime_list.delete(item)
+        
+        for anime in self.anime_manager.get_anime_list():
+            self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
+
+
+    # ===== NUEVA VENTANA PARA AGREGAR ANIME =====
+    def open_add_anime_window(self):
+        AddAnimeForm(self.root, self.anime_manager, on_save_callback=self.update_anime_treeview)        
