@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from AnimeManager import *
 from AddAnimeForm import *
+from EditAnimeForm import *
 
 class AnimeAppGUI:
     def __init__(self, root: tk.Tk):
@@ -67,8 +68,10 @@ class AnimeAppGUI:
         btn_add.pack(side=tk.LEFT, padx=btns_padx)
         btn_remove = ttk.Button(buttons_frame, text="Eliminar Anime", command=self.remove_anime)
         btn_remove.pack(side=tk.LEFT, padx=btns_padx)
-        btn_edit = ttk.Button(buttons_frame, text="Editar información")
+        btn_edit = ttk.Button(buttons_frame, text="Editar información", command=self.open_edit_anime_window)
         btn_edit.pack(side=tk.LEFT, padx=btns_padx)
+        btn_hrs = ttk.Button(buttons_frame, text="Horas vistas")
+        btn_hrs.pack(side=tk.LEFT, padx=btns_padx)
     
     def setup_anime_list(self, list_frame: ttk.Frame):
         cols = ("name", "caps", "cal", "gen", "state")
@@ -95,14 +98,24 @@ class AnimeAppGUI:
             self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
 
     def remove_anime(self):
-        anime_id = self.tree_anime_list.selection()
-        if anime_id:
-            self.anime_manager.remove_anime(anime_id[0])
-            self.update_anime_treeview()
-            messagebox.showinfo("Éxito", "Anime borrado exitosamente")
+        selected_anime = self.tree_anime_list.selection()
+        if selected_anime:
+            confirm = messagebox.askokcancel("Confirmación", "¿Estás seguro de querer borrar este Anime?")
+            if confirm:
+                self.anime_manager.remove_anime(selected_anime[0])
+                self.update_anime_treeview()
+                messagebox.showinfo("Éxito", "Anime borrado exitosamente")
         else:
             messagebox.showwarning("Advertencia", "Seleccione un Anime para borrar")
 
     # ===== NUEVA VENTANA PARA AGREGAR ANIME =====
     def open_add_anime_window(self):
         AddAnimeForm(self.root, self.anime_manager, on_save_callback=self.update_anime_treeview)        
+
+    def open_edit_anime_window(self):
+        selected_anime = self.tree_anime_list.selection()
+        if selected_anime:
+            EditAnimeForm(self.root, anime_manager=self.anime_manager, anime_id=selected_anime[0], 
+                          on_save_callback=self.update_anime_treeview)
+        else:
+            messagebox.showwarning("Advertencia", "Seleccione un Anime para editar")

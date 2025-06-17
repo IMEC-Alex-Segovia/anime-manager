@@ -27,6 +27,9 @@ class Anime:
     def get_anime_data(self):
         return (self.name, self.episodes, self.rate, self.state, self.episode_duration, self.genre)
     
+    def get_anime_update_data(self):
+        return (self.name, self.episodes, self.rate, self.state, self.episode_duration, self.genre, self.id)
+    
     def get_anime_treeview_data(self):
         return (self.name, self.episodes, self.rate, self.genre, self.state)
     

@@ -73,3 +73,19 @@ class AnimeManager:
             Anime(id=row[0], name=row[1], episodes=row[2], rate=row[3], state=row[4], 
                   episode_duration=row[5], genre=row[6]) for row in rows
         ]
+    
+    def get_anime_by_id(self, anime_id: int):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM anime WHERE id = ?", (anime_id, ))
+        row = cursor.fetchall()[0]
+        conn.close()
+        return Anime(id=row[0], name=row[1], episodes=row[2], rate=row[3], state=row[4], 
+                  episode_duration=row[5], genre=row[6])
+
+    def edit_anime(self, anime: Anime):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("UPDATE anime SET name = ?, episodes = ?, rate = ?, state = ?, episode_duration = ?, genre = ? WHERE id = ?", anime.get_anime_update_data())
+        conn.commit()
+        conn.close()
