@@ -3,9 +3,9 @@ class Anime:
         self.id = id
         self.name = name                          # nombre del anime
         self.episodes = episodes                  # número de episodios vistos
-        self.rate = rate          # calificación con estrellas del anime (del 1 al 5)
+        self.rate = rate                          # calificación con estrellas del anime (del 1 al 5)
         self.state = state                        # estado del anime (viendo, por ver, en pausa, terminado)
-        self.episode_duration = episode_duration # duración en minutos de cada episodio
+        self.episode_duration = episode_duration  # duración en minutos de cada episodio
         self.genre = genre                        # listado de géneros del anime
     
     def watched_hours(self):
