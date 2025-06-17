@@ -65,7 +65,7 @@ class AnimeAppGUI:
         buttons_frame.pack(pady=btns_padx)
         btn_add = ttk.Button(buttons_frame, text="Agregar Anime", command=self.open_add_anime_window)
         btn_add.pack(side=tk.LEFT, padx=btns_padx)
-        btn_remove = ttk.Button(buttons_frame, text="Eliminar Anime")
+        btn_remove = ttk.Button(buttons_frame, text="Eliminar Anime", command=self.remove_anime)
         btn_remove.pack(side=tk.LEFT, padx=btns_padx)
         btn_edit = ttk.Button(buttons_frame, text="Editar información")
         btn_edit.pack(side=tk.LEFT, padx=btns_padx)
@@ -94,6 +94,14 @@ class AnimeAppGUI:
         for anime in self.anime_manager.get_anime_list():
             self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
 
+    def remove_anime(self):
+        anime_id = self.tree_anime_list.selection()
+        if anime_id:
+            self.anime_manager.remove_anime(anime_id[0])
+            self.update_anime_treeview()
+            messagebox.showinfo("Éxito", "Anime borrado exitosamente")
+        else:
+            messagebox.showwarning("Advertencia", "Seleccione un Anime para borrar")
 
     # ===== NUEVA VENTANA PARA AGREGAR ANIME =====
     def open_add_anime_window(self):

@@ -55,6 +55,13 @@ class AnimeManager:
         )
         conn.commit()
         conn.close()
+    
+    def remove_anime(self, anime_id: int):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM anime WHERE id = ?", (anime_id,))
+        conn.commit()
+        conn.close()
 
     def get_anime_list(self):
         conn = sqlite3.connect(self.db_path)
