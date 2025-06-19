@@ -132,3 +132,14 @@ class AnimeManager:
                 episode_duration=row[5], genre=row[6]) for row in rows
         ]
                 
+    def get_anime_by_name(self, name: str):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM anime WHERE LOWER(name) LIKE LOWER(?)", (f"%{name}%", ))
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [
+            Anime(id=row[0], name=row[1], episodes=row[2], rate=row[3], state=row[4],
+                episode_duration=row[5], genre=row[6]) for row in rows
+        ]

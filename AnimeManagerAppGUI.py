@@ -28,7 +28,7 @@ class AnimeAppGUI:
         search_label.pack(side=tk.LEFT, padx=5)
         self.search_entry = ttk.Entry(search_frame, width=61, font=self.body_font)
         self.search_entry.pack(side=tk.LEFT, padx=5)
-        btn_search = ttk.Button(search_frame, text="Buscar")
+        btn_search = ttk.Button(search_frame, text="Buscar", command=self.search_anime_by_name)
         btn_search.pack(side=tk.LEFT, padx=5)
 
         # ===== FILTER =====
@@ -142,3 +142,19 @@ class AnimeAppGUI:
             self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
         
         messagebox.showinfo("Información", "Se han aplicado los filtros a la lista de Anime")
+    
+    def search_anime_by_name(self):
+        anime_name = self.search_entry.get().strip()
+        if anime_name:
+            for item in self.tree_anime_list.get_children():
+                self.tree_anime_list.delete(item)
+            
+            animes = self.anime_manager.get_anime_by_name(anime_name)
+            if animes:
+                for anime in animes:
+                    self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
+            else:
+                messagebox.showinfo("Información", f"No se encontraron Animes con el nombre {anime_name}")
+        else:
+            messagebox.showinfo("Información", "Escriba el nombre de un Anime")
+        self.search_entry.delete(0, "end")
