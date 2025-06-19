@@ -100,3 +100,35 @@ class AnimeManager:
         ''')
         watched_hours = cursor.fetchone()
         return round(watched_hours[0] / 60, 2) if watched_hours[0] else None
+    
+    def get_anime_filtered_list(self, rate="Todas", genre="Todos", state="Todos"):
+        filters = {
+            "rate": (rate, self.ratings),
+            "genre": (genre, self.genres),
+            "state": (state, self.states)
+        }
+
+        conditions = []
+        params = []
+
+        for field, (value, valid_options) in filters.items():
+            if value in valid_options:
+                conditions.append(f"{field} = ?")
+                params.append(value)
+
+        query = "SELECT * FROM anime"
+        
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute(query, tuple(params))
+        rows = cursor.fetchall()
+        conn.close()
+
+        return [
+            Anime(id=row[0], name=row[1], episodes=row[2], rate=row[3], state=row[4],
+                episode_duration=row[5], genre=row[6]) for row in rows
+        ]
+                
