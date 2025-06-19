@@ -70,7 +70,7 @@ class AnimeAppGUI:
         btn_remove.pack(side=tk.LEFT, padx=btns_padx)
         btn_edit = ttk.Button(buttons_frame, text="Editar información", command=self.open_edit_anime_window)
         btn_edit.pack(side=tk.LEFT, padx=btns_padx)
-        btn_hrs = ttk.Button(buttons_frame, text="Horas vistas")
+        btn_hrs = ttk.Button(buttons_frame, text="Horas vistas", command=self.show_watched_hours)
         btn_hrs.pack(side=tk.LEFT, padx=btns_padx)
     
     def setup_anime_list(self, list_frame: ttk.Frame):
@@ -119,3 +119,13 @@ class AnimeAppGUI:
                           on_save_callback=self.update_anime_treeview)
         else:
             messagebox.showwarning("Advertencia", "Seleccione un Anime para editar")
+    
+    def show_watched_hours(self):
+        watched_hours = self.anime_manager.get_watched_hours()
+        if watched_hours is None:
+            messagebox.showinfo("Tiempo viendo Anime", "Parece que aun no haz visto Anime")
+            return
+        message = f"¡Usted ha visto {watched_hours} horas de Anime!"
+        if (watched_hours / 24) > 1:
+            message += f"\nEso equivale a {round(watched_hours / 24, 2)} días."
+        messagebox.showinfo("Tiempo viendo Anime", message)

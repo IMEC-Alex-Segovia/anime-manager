@@ -89,3 +89,14 @@ class AnimeManager:
         cursor.execute("UPDATE anime SET name = ?, episodes = ?, rate = ?, state = ?, episode_duration = ?, genre = ? WHERE id = ?", anime.get_anime_update_data())
         conn.commit()
         conn.close()
+    
+    def get_watched_hours(self):
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+        cursor.execute('''
+            SELECT SUM(episodes * episode_duration) AS watched_hours
+            FROM anime
+            WHERE state IN ('Terminado', 'Viendo', 'En pausa')
+        ''')
+        watched_hours = cursor.fetchone()
+        return round(watched_hours[0] / 60, 2) if watched_hours[0] else None

@@ -21,7 +21,7 @@ class EditAnimeForm(tk.Toplevel):
         self._setup_form()
 
     def _setup_form(self):
-        tk.Label(self, text="Agregar un nuevo Anime", font=self.h1_title_font).pack(pady=10)
+        tk.Label(self, text="Editar Anime", font=self.h1_title_font).pack(pady=10)
 
         self.entries = {}
 
@@ -83,7 +83,7 @@ class EditAnimeForm(tk.Toplevel):
             genre=genre
         )
 
-        self.anime_manager.edit_anime(anime)  # Asegúrate de tener este método implementado
+        self.anime_manager.edit_anime(anime) 
         self.on_save_callback()
         messagebox.showinfo("Éxito", f"Anime '{name}' editado correctamente.")
         self.destroy()
