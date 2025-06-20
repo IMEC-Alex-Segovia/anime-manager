@@ -28,7 +28,7 @@ class AnimeAppGUI:
         search_label.pack(side=tk.LEFT, padx=5)
         self.search_entry = ttk.Entry(search_frame, width=61, font=self.body_font)
         self.search_entry.pack(side=tk.LEFT, padx=5)
-        btn_search = ttk.Button(search_frame, text="Buscar")
+        btn_search = ttk.Button(search_frame, text="Buscar", command=self.search_anime_by_name)
         btn_search.pack(side=tk.LEFT, padx=5)
 
         # ===== FILTER =====
@@ -52,7 +52,7 @@ class AnimeAppGUI:
         self.cmb_sta = ttk.Combobox(filter_frame, values=cmb_sta_values, width=10, state='readonly')
         self.cmb_sta.current(0)
         self.cmb_sta.pack(side=tk.LEFT, padx=5)
-        btn_filter = ttk.Button(filter_frame, text="Filtrar")
+        btn_filter = ttk.Button(filter_frame, text="Filtrar", command=self.get_filtered_anime_treeview)
         btn_filter.pack(side=tk.LEFT, padx=5)
 
         # ===== ANIME LIST =====
@@ -129,3 +129,32 @@ class AnimeAppGUI:
         if (watched_hours / 24) > 1:
             message += f"\nEso equivale a {round(watched_hours / 24, 2)} días."
         messagebox.showinfo("Tiempo viendo Anime", message)
+    
+    def get_filtered_anime_treeview(self):
+        for item in self.tree_anime_list.get_children():
+            self.tree_anime_list.delete(item)
+        
+        rate = self.cmb_cal.get()
+        genre = self.cmb_gen.get()
+        state = self.cmb_sta.get()
+
+        for anime in self.anime_manager.get_anime_filtered_list(rate, genre, state):
+            self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
+        
+        messagebox.showinfo("Información", "Se han aplicado los filtros a la lista de Anime")
+    
+    def search_anime_by_name(self):
+        anime_name = self.search_entry.get().strip()
+        if anime_name:
+            for item in self.tree_anime_list.get_children():
+                self.tree_anime_list.delete(item)
+            
+            animes = self.anime_manager.get_anime_by_name(anime_name)
+            if animes:
+                for anime in animes:
+                    self.tree_anime_list.insert("", "end", iid=str(anime.id), values=anime.get_anime_treeview_data())
+            else:
+                messagebox.showinfo("Información", f"No se encontraron Animes con el nombre {anime_name}")
+        else:
+            messagebox.showinfo("Información", "Escriba el nombre de un Anime")
+        self.search_entry.delete(0, "end")
