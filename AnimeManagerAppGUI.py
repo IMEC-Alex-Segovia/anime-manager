@@ -17,14 +17,14 @@ class AnimeAppGUI:
         self.setup_ui()
     
     def setup_ui(self):
-        self.notebook = ttk.Notebook(self.root)
-        self.notebook.pack()
+        self.notebook = ttk.Notebook(self.root, width=self.width, height=self.height)
+        self.notebook.pack(expand=True)
 
         self.anime_manager_list = AnimeListFrame(self.notebook, root=self.root, height=self.height, width=self.width)
-        self.anime_manager_list.pack()
+        self.anime_manager_list.pack(fill="both", expand=True)
 
-        self.anime_manager_config = tk.Frame(self.notebook, height=self.height, width=self.width)
-        self.anime_manager_config.pack()
+        self.anime_manager_config = tk.Label(self.notebook, height=self.height, width=self.width)
+        self.anime_manager_config.pack(fill="both", expand=True)
 
         self.notebook.add(self.anime_manager_list, text="Lista de Anime")
         self.notebook.add(self.anime_manager_config, text="Configuración")
